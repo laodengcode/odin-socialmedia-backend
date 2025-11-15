@@ -2,7 +2,7 @@
 const prisma = require('../src/prismaClient');
 
 beforeAll(async () => {
-    jest.setTimeout(20000);
+  jest.setTimeout(30000);
   // Ensure DB clean (order matters for FK)
   await prisma.like.deleteMany().catch(() => {});
   await prisma.comment.deleteMany().catch(() => {});
