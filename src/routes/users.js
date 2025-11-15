@@ -1,19 +1,19 @@
+const prisma = require("../prismaClient");
+
 const express = require('express');
 const router = express.Router();
 const ensureAuth = require('../middleware/ensureAuth');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinaryStorage = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'social_clone/profiles',
-    allowed_formats: ['jpg', 'png', 'jpeg'],
-    transformation: [{ width: 800, crop: 'limit' }]
+const storage = cloudinaryStorage({
+  cloudinary: cloudinary,
+  folder: 'social_clone/profiles',
+  allowedFormats: ['jpg', 'png', 'jpeg'],
+  filename: function (req, file, cb) {
+    cb(undefined, file.originalname);
   }
 });
 const upload = multer({ storage });

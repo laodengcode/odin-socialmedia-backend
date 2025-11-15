@@ -1,8 +1,7 @@
+const prisma = require("../prismaClient");
 const express = require('express');
 const router = express.Router();
 const ensureAuth = require('../middleware/ensureAuth');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 // Create comment
 router.post('/:postId', ensureAuth, async (req, res) => {

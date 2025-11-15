@@ -1,9 +1,8 @@
+const prisma = require("../prismaClient");
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
 
 // Register
 router.post('/register', async (req, res) => {
@@ -50,9 +49,14 @@ router.post('/login', (req, res, next) => {
 
 // Logout
 router.post('/logout', (req, res) => {
-  req.logout(() => {}); // passport 0.6 requires callback
-  req.session.destroy();
-  res.json({ ok: true });
+  req.logout((err) => {
+    if (err) return res.status(500).json({ error: 'Logout failed' });
+    req.session.destroy((err) => {
+      if (err) return res.status(500).json({ error: 'Session destruction failed' });
+      res.clearCookie('connect.sid');
+      res.json({ ok: true });
+    });
+  });
 });
 
 // Current user
