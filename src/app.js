@@ -9,6 +9,9 @@ require('./config/passport')(passport);
 
 const app = express();
 
+// Trust proxy - CRITICAL for Railway/Heroku
+app.set('trust proxy', 1);
+
 // CORS Configuration - MUST be before other middleware
 const corsOptions = {
   origin: function (origin, callback) {
@@ -48,11 +51,13 @@ app.use(
     secret: process.env.SESSION_SECRET || 'dev-secret',
     resave: false,
     saveUninitialized: false,
+    proxy: true, // Trust the reverse proxy
     cookie: { 
       maxAge: 1000 * 60 * 60 * 24, // 1 day
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // 'none' for cross-origin in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin in production
+      domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost' // Don't set domain in production
     }
   })
 );
